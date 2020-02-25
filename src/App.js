@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
-// import axios from 'axios';
 
 function App() {
   const [data, setData] = useState();
-  // const [query, setQuery] = useState('react');
 
   useEffect(() => {
     async function fetchData() {
-      // You can await here
+
       const res = await fetch("https://api.spacexdata.com/v3/launches/past");
       const json = await res.json();
       console.log(json);
@@ -57,11 +55,17 @@ function App() {
 
       console.log('sortedbypayload', sortedByPayload)
 
-      const finalObj = (({ a, c }) => ({ a, c }))(object);
+      const finalObj = sortedByPayload.map(obj => {
+        return({flight_number: obj.flight_number, mission_name: obj.mission_name, payloads_count: obj.rocket.second_stage.payloads.length})
+      })
+
+      // const finalObj = (({ flight_number, mission_name }) => ({ flight_number, mission_name }))(sortedByPayload);
+
+      console.log(finalObj)
       // const filteredByCustomer = filteredByYear.filter((item) => item.rocket.second_stage.payloads.filter((load) => load.customer.includes("NASA"))
 
 
-      setData(sortedByPayload);
+      setData(finalObj);
     }
     fetchData();
   }, []);
@@ -71,15 +75,6 @@ function App() {
   return (
     <div className="App">
       <pre>{data ? JSON.stringify(data, null, 2) : "loading ... "}</pre>
-      {/* data
-        ? data.map(item => (
-            <li key={item.flight_number}>
-              flight number:{item.flight_number} | mission name:{" "}
-              {item.mission_name} | payload count: {item.rocket.second_stage.payloads.length} | {item.launch_date_utc}
-            </li>
-          ))
-        : "loading..." */}
-      hi
     </div>
   );
 }
